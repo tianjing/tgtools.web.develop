@@ -61,9 +61,9 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler {
         return false;
     }
 
-    private  class MyMessageListen implements IMessageListening {
-        private String mRestName;
-        private String mUrl;
+    public class MyMessageListen implements IMessageListening {
+        protected String mRestName;
+        protected String mUrl;
 
         public MyMessageListen(String pRestName, String pUrl) {
             mRestName = pRestName;

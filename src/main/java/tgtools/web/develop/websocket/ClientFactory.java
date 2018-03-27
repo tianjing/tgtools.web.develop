@@ -15,14 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 16:05
  */
 public class ClientFactory {
-    private static ConcurrentHashMap<String,WebSocketSession> mClients=new ConcurrentHashMap<String,WebSocketSession>();
+    protected ConcurrentHashMap<String,WebSocketSession> mClients=new ConcurrentHashMap<String,WebSocketSession>();
 
     /**
      * 添加一个客户端
      * @param pUserName
      * @param pClient
      */
-    public static void addClient(String pUserName, WebSocketSession pClient)
+    public  void addClient(String pUserName, WebSocketSession pClient)
     {
         if(!mClients.containsKey(pUserName))
         {
@@ -34,7 +34,7 @@ public class ClientFactory {
      * 根据value 删除客户端
      * @param pClient
      */
-    public static void removeClient(WebSocketSession pClient)
+    public  void removeClient(WebSocketSession pClient)
     {
         for(ConcurrentHashMap.Entry<String,WebSocketSession> item :mClients.entrySet())
         {
@@ -50,7 +50,7 @@ public class ClientFactory {
      * 根据用户名删除客户端
      * @param pUserName
      */
-    public static void removeClient(String pUserName)
+    public  void removeClient(String pUserName)
     {
         if(mClients.containsKey(pUserName))
         {
@@ -64,7 +64,7 @@ public class ClientFactory {
      * @param pMessage
      * @throws APPErrorException
      */
-    public static void sendMessage(String pUserName, TextMessage pMessage) throws APPErrorException {
+    public  void sendMessage(String pUserName, TextMessage pMessage) throws APPErrorException {
         if(mClients.containsKey(pUserName))
         {
             try {
@@ -81,7 +81,7 @@ public class ClientFactory {
      * @param pMessage
      * @throws APPErrorException
      */
-    public static void sendMessage(String pUserName, String pMessage) throws APPErrorException {
+    public  void sendMessage(String pUserName, String pMessage) throws APPErrorException {
         if(mClients.containsKey(pUserName))
         {
             try {

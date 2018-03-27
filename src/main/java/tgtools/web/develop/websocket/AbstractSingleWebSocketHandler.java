@@ -28,12 +28,14 @@ import tgtools.web.entity.ResposeData;
 public abstract class AbstractSingleWebSocketHandler<T extends UserService> extends AbstractWebSocketHandler {
     public AbstractSingleWebSocketHandler()
     {
-        websocketCommand = new CommandFactory(getCommandType());
-        websocketCommand.init();
+        mClientFactory= new ClientFactory();
+        mWebsocketCommand = new CommandFactory(getCommandType());
+        mWebsocketCommand.init();
     }
 
     protected abstract String getCommandType();
-    protected CommandFactory websocketCommand;
+    protected CommandFactory mWebsocketCommand;
+    protected ClientFactory mClientFactory;
 
     @Autowired
     protected SecurityManager mSecurityManager;
@@ -60,7 +62,7 @@ public abstract class AbstractSingleWebSocketHandler<T extends UserService> exte
             JSONObject json = new JSONObject(((TextMessage) webSocketMessage).getPayload());
             ValidMessage rm = (ValidMessage) tgtools.util.JsonParseHelper.parseToObject(json, ValidMessage.class);
             validLogin(webSocketSession, rm);
-            websocketCommand.process(rm.getOperation(), json.getJSONObject("data"));
+            mWebsocketCommand.process(rm.getOperation(), json.getJSONObject("data"));
         } catch (Exception e) {
             try {
                 ResposeData data = new ResposeData();
@@ -80,11 +82,11 @@ public abstract class AbstractSingleWebSocketHandler<T extends UserService> exte
 
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
-        ClientFactory.removeClient(webSocketSession);
+        mClientFactory.removeClient(webSocketSession);
     }
 
     protected void validLogin(WebSocketSession pWebSocketSession, ValidMessage pValidMessage) throws APPErrorException {
-        ClientFactory.addClient(pValidMessage.getUser(), pWebSocketSession);
+        mClientFactory.addClient(pValidMessage.getUser(), pWebSocketSession);
 
         SimpleSession session = new SimpleSession();
         session.setHost(pWebSocketSession.getRemoteAddress().getHostName());
