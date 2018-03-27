@@ -25,13 +25,20 @@ import tgtools.web.entity.ResposeData;
  * @Description
  * @date 17:17
  */
-public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHandler {
+public abstract class AbstractSingleWebSocketHandler<T extends UserService> extends AbstractWebSocketHandler {
+    public AbstractSingleWebSocketHandler()
+    {
+        websocketCommand = new CommandFactory(getCommandType());
+        websocketCommand.init();
+    }
+
+    protected abstract String getCommandType();
+    protected CommandFactory websocketCommand;
+
     @Autowired
     protected SecurityManager mSecurityManager;
     @Autowired
-    protected CommandFactory websocketCommand;
-    @Autowired
-    protected UserService mUserService;
+    protected T mUserService;
 
     @Override
     public String getRest() {
