@@ -1,6 +1,5 @@
 package tgtools.web.develop.message;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import tgtools.exceptions.APPErrorException;
 import tgtools.json.JSONObject;
@@ -9,6 +8,7 @@ import tgtools.web.develop.util.JsonObjectDeserializer;
 
 /**
  * 通用接口层基础通信json 类型
+ *
  * @author 田径
  * @Title
  * @Description
@@ -19,9 +19,14 @@ public class ValidMessage {
     private String mUser;
     private String mOperation;
 
-    @JsonDeserialize(using=JsonObjectDeserializer.class)
-    @JsonProperty(value="data")
     private JSONObject mData;
+
+    public static void main(String[] args) throws APPErrorException {
+        String jsonstr="{\"token\": token, \"user\": \"admin\", \"operation\": \"operation1\", \"data\": {\"fda\":\"fdafd\",\"sex\":\"男\",\"my\":true}};";
+        JSONObject json =new JSONObject(jsonstr);
+        ValidMessage rm = (ValidMessage) tgtools.util.JsonParseHelper.parseToObject(json, ValidMessage.class);
+        System.out.println(rm);
+    }
 
     public String getToken() {
         return mToken;
@@ -50,9 +55,8 @@ public class ValidMessage {
     public JSONObject getData() {
         return mData;
     }
-
+    @JsonDeserialize(using = JsonObjectDeserializer.class)
     public void setData(JSONObject pData) {
         this.mData = pData;
     }
-
-   }
+}
