@@ -89,7 +89,7 @@ public abstract class AbstractSingleGateway<T extends UserService> {
 
             mUserService.tokenLogin(request.getRemoteAddr(), rm.getUser(), rm.getToken());
 
-            Object obj = restCommand.process(rm.getOperation(), json.getJSONObject("data"));
+            Object obj = restCommand.process(rm.getOperation(), rm.getData());
             res.setSuccess(true);
             res.setData(obj);
         } catch (Exception e) {

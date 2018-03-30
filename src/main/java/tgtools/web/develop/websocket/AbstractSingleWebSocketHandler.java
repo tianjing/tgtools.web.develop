@@ -62,7 +62,7 @@ public abstract class AbstractSingleWebSocketHandler<T extends UserService> exte
             JSONObject json = new JSONObject(((TextMessage) webSocketMessage).getPayload());
             ValidMessage rm = (ValidMessage) tgtools.util.JsonParseHelper.parseToObject(json, ValidMessage.class);
             validLogin(webSocketSession, rm);
-            mWebsocketCommand.process(rm.getOperation(), json.getJSONObject("data"));
+            mWebsocketCommand.process(rm.getOperation(), rm.getData());
         } catch (Exception e) {
             try {
                 ResposeData data = new ResposeData();
