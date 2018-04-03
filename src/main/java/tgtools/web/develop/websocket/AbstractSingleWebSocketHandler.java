@@ -86,15 +86,13 @@ public abstract class AbstractSingleWebSocketHandler<T extends UserService> exte
     }
 
     protected void validLogin(WebSocketSession pWebSocketSession, ValidMessage pValidMessage) throws APPErrorException {
-        mClientFactory.addClient(pValidMessage.getUser(), pWebSocketSession);
-
+        //模拟登陆
         SimpleSession session = new SimpleSession();
         session.setHost(pWebSocketSession.getRemoteAddress().getHostName());
         WebDelegatingSubject subject = new WebDelegatingSubject(null, true, "", session, null, null, mSecurityManager);
         ThreadContext.bind(subject);
-
-
         mUserService.tokenLogin(pWebSocketSession.getRemoteAddress().getHostName(), pValidMessage.getUser(), pValidMessage.getToken());
-        SecurityUtils.getSubject().getPrincipal();
+        //登录成功后 添加客户端
+        mClientFactory.addClient(pValidMessage.getUser(), pWebSocketSession);
     }
 }

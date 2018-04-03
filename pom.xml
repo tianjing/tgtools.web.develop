@@ -6,7 +6,7 @@
 
     <groupId>com.github.tianjing</groupId>
     <artifactId>tgtools.web.develop</artifactId>
-    <version>1.0.7</version>
+    <version>1.0.8-SNAPSHOT</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/tianjing/tgtools.web.develop</url>
