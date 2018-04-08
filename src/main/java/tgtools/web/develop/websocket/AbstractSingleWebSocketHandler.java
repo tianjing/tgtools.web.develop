@@ -1,11 +1,9 @@
 package tgtools.web.develop.websocket;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SimpleSession;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.support.WebDelegatingSubject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
@@ -37,20 +35,12 @@ public abstract class AbstractSingleWebSocketHandler<T extends UserService> exte
     protected CommandFactory mWebsocketCommand;
     protected ClientFactory mClientFactory;
 
-    @Autowired
-    protected SecurityManager mSecurityManager;
-    @Autowired
-    protected T mUserService;
 
-    @Override
-    public String getRest() {
-        return "rest1";
-    }
+    protected abstract SecurityManager getSecurityManager();
 
-    @Override
-    public String getUrl() {
-        return "/wcpt";
-    }
+    protected abstract T getUserService();
+
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
@@ -89,9 +79,9 @@ public abstract class AbstractSingleWebSocketHandler<T extends UserService> exte
         //模拟登陆
         SimpleSession session = new SimpleSession();
         session.setHost(pWebSocketSession.getRemoteAddress().getHostName());
-        WebDelegatingSubject subject = new WebDelegatingSubject(null, true, "", session, null, null, mSecurityManager);
+        WebDelegatingSubject subject = new WebDelegatingSubject(null, true, "", session, null, null, getSecurityManager());
         ThreadContext.bind(subject);
-        mUserService.tokenLogin(pWebSocketSession.getRemoteAddress().getHostName(), pValidMessage.getUser(), pValidMessage.getToken());
+        getUserService().tokenLogin(pWebSocketSession.getRemoteAddress().getHostName(), pValidMessage.getUser(), pValidMessage.getToken());
         //登录成功后 添加客户端
         mClientFactory.addClient(pValidMessage.getUser(), pWebSocketSession);
     }
