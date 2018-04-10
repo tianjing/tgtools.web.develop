@@ -13,6 +13,7 @@ import tgtools.json.JSONObject;
 import tgtools.web.develop.command.CommandFactory;
 import tgtools.web.develop.message.ValidMessage;
 import tgtools.web.develop.service.UserService;
+import tgtools.web.develop.websocket.listener.ClientFactoryListener;
 import tgtools.web.entity.ResposeData;
 
 /**
@@ -23,7 +24,7 @@ import tgtools.web.entity.ResposeData;
  * @Description
  * @date 17:17
  */
-public abstract class AbstractSingleWebSocketHandler<T extends UserService> extends AbstractWebSocketHandler {
+public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHandler {
     public AbstractSingleWebSocketHandler()
     {
         mClientFactory= new ClientFactory();
@@ -38,9 +39,7 @@ public abstract class AbstractSingleWebSocketHandler<T extends UserService> exte
 
     protected abstract SecurityManager getSecurityManager();
 
-    protected abstract T getUserService();
-
-
+    protected abstract <T extends UserService>T getUserService();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {

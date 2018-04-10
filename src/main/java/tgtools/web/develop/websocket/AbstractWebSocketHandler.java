@@ -16,13 +16,14 @@ import javax.annotation.PostConstruct;
 
 
 /**
+ * 实现springbean加载子类后，将url 加载到指定的servletName中
  * @author 田径
  * @Title
  * @Description
  * @date 10:14
  */
 public abstract class AbstractWebSocketHandler implements WebSocketHandler {
-    public abstract String getRest();
+    public abstract String getServletName();
 
     public abstract String getUrl();
 
@@ -30,7 +31,7 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler {
     @PostConstruct
     public void init() {
         try {
-            tgtools.message.MessageFactory.registerListening(new MyMessageListen(getRest(),getUrl()));
+            tgtools.message.MessageFactory.registerListening(new MyMessageListen(getServletName(),getUrl()));
         } catch (APPErrorException e) {
             e.printStackTrace();
         }
@@ -62,11 +63,11 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler {
     }
 
     public class MyMessageListen implements IMessageListening {
-        protected String mRestName;
+        protected String mServletName;
         protected String mUrl;
 
-        public MyMessageListen(String pRestName, String pUrl) {
-            mRestName = pRestName;
+        public MyMessageListen(String pServletName, String pUrl) {
+            mServletName = pServletName;
             mUrl = pUrl;
         }
 
@@ -77,15 +78,15 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler {
 
         @Override
         public void onMessage(Message message) {
-            if (StringUtil.isNullOrEmpty(mRestName) || StringUtil.isNullOrEmpty(mUrl)) {
+            if (StringUtil.isNullOrEmpty(mServletName) || StringUtil.isNullOrEmpty(mUrl)) {
                 return;
             }
             try {
                 if ("addDispatcherServlet".equals(message.getEvent())) {
                     System.out.println("Message Content :" + message.getContent());
                     JSONObject json = new JSONObject(message.getContent());
-                    if (mRestName.equals(json.getString("ServletName"))) {
-                        PlatformDispatcherServletFactory.getDispatcher(mRestName).addWebsocket(mUrl, new WebSocketHttpRequestHandler(AbstractWebSocketHandler.this));
+                    if (mServletName.equals(json.getString("ServletName"))) {
+                        PlatformDispatcherServletFactory.getDispatcher(mServletName).addWebsocket(mUrl, new WebSocketHttpRequestHandler(AbstractWebSocketHandler.this));
                         tgtools.message.MessageFactory.unRegisterListening(getName());
                     }
                 }
