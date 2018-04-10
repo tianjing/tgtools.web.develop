@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 import tgtools.exceptions.APPErrorException;
 import tgtools.json.JSONObject;
 import tgtools.web.develop.command.CommandFactory;
+import tgtools.web.develop.message.NotifyMessage;
 import tgtools.web.develop.message.ValidMessage;
 import tgtools.web.develop.service.UserService;
 import tgtools.web.develop.websocket.listener.ClientFactoryListener;
@@ -64,7 +65,13 @@ public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHa
         }
 
     }
+    public void sendMessage(String pLoginName, String pMessage) throws APPErrorException {
+        mClientFactory.sendMessage(pLoginName, pMessage);
+    }
 
+    public void sendNotifyMessage(String pLoginName, NotifyMessage pMessage) throws APPErrorException {
+        sendMessage(pLoginName, pMessage.toString());
+    }
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
     }

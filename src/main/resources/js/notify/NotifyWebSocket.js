@@ -1,18 +1,27 @@
-function NotifyWebSocket(option) {
-    this._option = option;
-    var _isOpen=false;
+function NotifyWebSocket(url) {
+    this._option = {"url": url, "callback": {}};
+    this._option["url"] = url;
+    var _isOpen = false;
     var that = this;
-    this.isOpen=function()
-    {
+    this.isOpen = function () {
         return _isOpen;
     }
-    this.send = function (data) {
-        that._wstext.send(data)
+
+    this.sendNotify = function (username, token, command, data) {
+        var mydata = {"token": token, "user": username, "operation": command, "data": data};
+        that._wstext.send(JSON.stringify(mydata))
     };
+    this.subscribe = function (name, func) {
+        this._option.callback[name] = func;
+    };
+    this.unSubscribe = function (name, func) {
+        delete this._option.callback[name];
+    };
+
     this._wstext = new WebSocket(this._option.url);
     this._wstext.onopen = function () {
         console.log('onopen');
-        _isOpen=true;
+        _isOpen = true;
         if (that._option.onopen) {
             that._option.onopen();
         }
@@ -32,7 +41,7 @@ function NotifyWebSocket(option) {
     };
 
     this._wstext.onclose = function (a, b) {
-        _isOpen=false;
+        _isOpen = false;
         console.log('onclose');
         if (that._option.onclose) {
             that._option.onclose(a, b);
