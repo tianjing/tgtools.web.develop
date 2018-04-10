@@ -1,12 +1,8 @@
 package tgtools.web.develop.model;
 
-import tgtools.util.GUID;
 import tgtools.util.StringUtil;
 import tgtools.web.develop.util.ModelHelper;
 import tgtools.web.util.PageSqlUtil;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
 
 /**
  * @author 田径

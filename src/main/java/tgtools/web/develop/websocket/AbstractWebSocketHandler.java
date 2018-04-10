@@ -31,6 +31,9 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler {
     @PostConstruct
     public void init() {
         try {
+            /**
+             * 增加消息监听 在 Servlet加载完后 触发监听 MyMessageListen
+             */
             tgtools.message.MessageFactory.registerListening(new MyMessageListen(getServletName(),getUrl()));
         } catch (APPErrorException e) {
             e.printStackTrace();
@@ -62,6 +65,9 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler {
         return false;
     }
 
+    /**
+     * 通过tgtools message 在 Servlet加载完后附加websocket
+     */
     public class MyMessageListen implements IMessageListening {
         protected String mServletName;
         protected String mUrl;

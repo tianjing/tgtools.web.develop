@@ -14,7 +14,7 @@ import javax.persistence.Id;
  * @Description
  * @date 18:47
  */
-public class BaseModel {
+public class BaseModel extends AbstractModel {
     @Id
     @Column(name="ID_")
     private String mId;
@@ -42,6 +42,7 @@ public class BaseModel {
      * @param pPageSize
      * @return
      */
+    @Override
     public String pageSql(int pPageIndex, int pPageSize)
     {
         String tablename= ModelHelper.getTableName(this.getClass());
@@ -54,6 +55,7 @@ public class BaseModel {
      * 获取所有数据 根据rev排序
      * @return
      */
+    @Override
     public String treeSql()
     {
         String tablename= ModelHelper.getTableName(this.getClass());

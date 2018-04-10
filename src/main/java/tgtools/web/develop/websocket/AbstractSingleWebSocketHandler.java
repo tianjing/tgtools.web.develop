@@ -19,7 +19,7 @@ import tgtools.web.entity.ResposeData;
 
 /**
  * 通用的WebSocket+command的组合
- *
+ * 注意：当前handler是单例的 也就是说 一个url 一个 handler ，不会一次请求 new一个handler
  * @author 田径
  * @Title
  * @Description
@@ -46,6 +46,12 @@ public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHa
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
     }
 
+    /**
+     * websocket 消息 处理
+     * @param webSocketSession
+     * @param webSocketMessage
+     * @throws Exception
+     */
     @Override
     public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) throws Exception {
         try {

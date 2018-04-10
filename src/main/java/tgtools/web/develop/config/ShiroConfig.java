@@ -20,6 +20,8 @@ import org.springframework.context.annotation.Bean;
 
 
 /**
+ * rest通道和websocket通道
+ * 实现token自动登陆（可以获取当前用户信息）
  * @author 田径
  * @Title
  * @Description

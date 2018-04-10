@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * 实现 mybatis 支持 返回 DataTable类型
+ * 用法：factoryBean.setPlugins(new Interceptor[]{new DataTableInterceptor()});
  * @author 田径
  * @Title
  * @Description
@@ -49,6 +51,12 @@ public class DataTableInterceptor implements Interceptor {
         }
         return invocation.proceed();
     }
+
+    /**
+     * 获取 dao 返回类型是否是DataTable
+     * @param resultSetHandler
+     * @return
+     */
     protected boolean isDataTableResultType(DefaultResultSetHandler resultSetHandler)
     {
         MappedStatement mappedStatement= reflect(resultSetHandler);
@@ -59,6 +67,12 @@ public class DataTableInterceptor implements Interceptor {
         }
         return false;
     }
+
+    /**
+     * 获取当前sql
+     * @param resultSetHandler
+     * @return
+     */
     protected String getSql(DefaultResultSetHandler resultSetHandler)
     {
         Field field = ReflectionUtils.findField(DefaultResultSetHandler.class, "rowBounds");
@@ -76,6 +90,12 @@ public class DataTableInterceptor implements Interceptor {
         }
         return StringUtil.EMPTY_STRING;
     }
+
+    /**
+     * 获取Mapper信息
+     * @param resultSetHandler
+     * @return
+     */
     protected MappedStatement reflect(DefaultResultSetHandler resultSetHandler){
         Field field = ReflectionUtils.findField(DefaultResultSetHandler.class, "mappedStatement");
         field.setAccessible(true);
