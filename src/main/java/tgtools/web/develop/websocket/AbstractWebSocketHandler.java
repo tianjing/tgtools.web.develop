@@ -13,6 +13,7 @@ import tgtools.util.StringUtil;
 import tgtools.web.platform.PlatformDispatcherServletFactory;
 
 import javax.annotation.PostConstruct;
+import java.io.Closeable;
 
 
 /**
@@ -22,7 +23,7 @@ import javax.annotation.PostConstruct;
  * @Description
  * @date 10:14
  */
-public abstract class AbstractWebSocketHandler implements WebSocketHandler {
+public abstract class AbstractWebSocketHandler implements WebSocketHandler, Closeable {
     public abstract String getServletName();
 
     public abstract String getUrl();

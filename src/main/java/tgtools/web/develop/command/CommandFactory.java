@@ -1,7 +1,10 @@
 package tgtools.web.develop.command;
 
 import tgtools.exceptions.APPErrorException;
+import tgtools.interfaces.IDispose;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -12,7 +15,7 @@ import java.util.HashMap;
  * @Description
  * @date 16:56
  */
-public class CommandFactory {
+public class CommandFactory implements Closeable {
     protected HashMap<String, Command> mCommands = new HashMap<String, Command>();
     protected String mType;
     public CommandFactory(String pType) {
@@ -62,4 +65,8 @@ public class CommandFactory {
         }
     }
 
+    @Override
+    public void close()  {
+        mCommands.clear();
+    }
 }

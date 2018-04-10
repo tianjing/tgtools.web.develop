@@ -17,6 +17,8 @@ import tgtools.web.develop.service.UserService;
 import tgtools.web.develop.websocket.listener.ClientFactoryListener;
 import tgtools.web.entity.ResposeData;
 
+import java.io.IOException;
+
 /**
  * 通用的WebSocket+command的组合
  * 注意：当前handler是单例的 也就是说 一个url 一个 handler ，不会一次请求 new一个handler
@@ -96,5 +98,16 @@ public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHa
         getUserService().tokenLogin(pWebSocketSession.getRemoteAddress().getHostName(), pValidMessage.getUser(), pValidMessage.getToken());
         //登录成功后 添加客户端
         mClientFactory.addClient(pValidMessage.getUser(), pWebSocketSession);
+    }
+    @Override
+    public void close() {
+      if(null!=mWebsocketCommand)
+      {
+         mWebsocketCommand.close();
+      }
+        if(null!=mClientFactory)
+        {
+            mClientFactory.close();
+        }
     }
 }

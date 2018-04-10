@@ -7,6 +7,7 @@ import tgtools.web.develop.websocket.listener.ClientFactoryListener;
 import tgtools.web.develop.websocket.listener.event.AddClientEvent;
 import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Description
  * @date 16:05
  */
-public class ClientFactory {
+public class ClientFactory implements Closeable {
     protected ConcurrentHashMap<String, WebSocketSession> mClients = new ConcurrentHashMap<String, WebSocketSession>();
 
     protected ClientFactoryListener mClientFactoryListener;
@@ -123,5 +124,17 @@ public class ClientFactory {
             mClientFactoryListener.removeClient(this, new RemoveClientEvent(pUserName));
         }
     }
+    @Override
+    public void close()  {
+        mClientFactoryListener =null;
+        for(WebSocketSession session :mClients.values())
+        {
+            try {
+                session.close();
+            } catch (IOException e) {
 
+            }
+        }
+        mClients.clear();
+    }
 }
