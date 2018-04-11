@@ -4,9 +4,25 @@
  * @param url websocket url
  * @constructor
  */
-function NotifyWebSocket(url) {
+function NotifyWebSocket(url, option) {
     this._option = {"url": url, "callback": {}};
     this._option["url"] = url;
+
+    if(option) {
+        if (option.onerror) {
+            this._option.onerror = option.onerror;
+        }
+        if (option.onclose) {
+            this._option.onclose = option.onclose;
+        }
+        if (option.onopen) {
+            this._option.onopen = option.onopen;
+        }
+        if (option.onErrorMessage) {
+            this._option.onErrorMessage = option.onErrorMessage;
+        }
+    }
+
     var _isOpen = false;
     var that = this;
     this.isOpen = function () {
@@ -50,15 +66,23 @@ function NotifyWebSocket(url) {
     };
     this._wstext.onerror = function (e) {
         console.log('onerror');
-        if (that._option.onclose) {
-            that._option.onclose(e);
+        if (that._option.onerror) {
+            that._option.onerror(e);
         }
     }
     this._wstext.onmessage = function (e) {
         console.log("onmessage");
         var data = eval("(" + e.data + ")");
-        if (that._option.callback[data.type]) {
+        if (data.type && that._option.callback[data.type]) {
             that._option.callback[data.type](data.content);
+        }
+        else if (!data.type && data.error) {
+            if (that._option.onErrorMessage) {
+                that._option.onErrorMessage(data);
+            }
+            else {
+                alert(data.error);
+            }
         }
     };
 
