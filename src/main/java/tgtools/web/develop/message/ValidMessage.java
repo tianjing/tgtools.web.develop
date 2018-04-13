@@ -22,7 +22,7 @@ public class ValidMessage {
     private JSONObject mData;
 
     public static void main(String[] args) throws APPErrorException {
-        String jsonstr="{\"token\": token, \"user\": \"admin\", \"operation\": \"operation1\", \"data\": {\"fda\":\"fdafd\",\"sex\":\"男\",\"my\":true}};";
+        String jsonstr="{{\"data\":{\"say\":\"im tg\"},\"user\":\"admin\",\"operation\":\"helloword\",\"token\":{\"data\":\"9f511fe70195028a9dcaa35c445661d5\",\"success\":true,\"error\":null}}";
         JSONObject json =new JSONObject(jsonstr);
         ValidMessage rm = (ValidMessage) tgtools.util.JsonParseHelper.parseToObject(json, ValidMessage.class);
         System.out.println(rm);

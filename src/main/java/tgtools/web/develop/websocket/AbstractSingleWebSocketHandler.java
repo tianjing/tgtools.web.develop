@@ -12,12 +12,9 @@ import tgtools.exceptions.APPErrorException;
 import tgtools.json.JSONObject;
 import tgtools.web.develop.command.CommandFactory;
 import tgtools.web.develop.message.NotifyMessage;
+import tgtools.web.develop.message.ResponseMessage;
 import tgtools.web.develop.message.ValidMessage;
 import tgtools.web.develop.service.UserService;
-import tgtools.web.develop.websocket.listener.ClientFactoryListener;
-import tgtools.web.entity.ResposeData;
-
-import java.io.IOException;
 
 /**
  * 通用的WebSocket+command的组合
@@ -63,9 +60,9 @@ public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHa
             mWebsocketCommand.process(rm.getOperation(), rm.getData());
         } catch (Exception e) {
             try {
-                ResposeData data = new ResposeData();
-                data.setSuccess(false);
-                data.setError(e.getMessage());
+                ResponseMessage data = new ResponseMessage();
+                data.setStatus(false);
+                data.setData(e.getMessage());
                 webSocketSession.sendMessage(new TextMessage(tgtools.util.JsonParseHelper.parseToJsonObject(data).toString()));
             } catch (Exception ex) {
                 ex.printStackTrace();

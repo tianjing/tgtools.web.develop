@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import tgtools.exceptions.APPErrorException;
 import tgtools.util.StringUtil;
+import tgtools.web.develop.message.GridMessage;
+import tgtools.web.develop.message.ResponseMessage;
 import tgtools.web.develop.model.BaseModel;
 import tgtools.web.develop.service.AbstractService;
-import tgtools.web.entity.GridData;
-import tgtools.web.entity.ResposeData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +47,7 @@ public class AbstractGateway<T extends AbstractService,E extends BaseModel> {
     )})
     @RequestMapping(value="/listpage",method = {RequestMethod.POST})
     @ResponseBody
-    public GridData list(@RequestParam("pageIndex") int pPageIndex, @RequestParam("pageSize") int pPageSize)
+    public GridMessage list(@RequestParam("pageIndex") int pPageIndex, @RequestParam("pageSize") int pPageSize)
     {
         return mService.listPage(pPageIndex+1,pPageSize);
     }
@@ -55,10 +55,10 @@ public class AbstractGateway<T extends AbstractService,E extends BaseModel> {
     @ApiOperation("根据ID获取数据")
     @RequestMapping(value="/get",method = {RequestMethod.GET})
     @ResponseBody
-    public ResposeData get(@RequestParam("id")String id)
+    public ResponseMessage get(@RequestParam("id")String id)
     {
-        ResposeData data =new ResposeData();
-        data.setSuccess(false);
+        ResponseMessage data =new ResponseMessage();
+        data.setStatus(false);
         try {
             if(StringUtil.isNullOrEmpty(id))
             {
@@ -67,32 +67,32 @@ public class AbstractGateway<T extends AbstractService,E extends BaseModel> {
             BaseModel model =mService.createModel();
             model.setId(id);
             Object entity= mService.get(model);
-            data.setSuccess(true);
+            data.setStatus(true);
             data.setData(entity);
         }
         catch (Exception e)
         {
-            data.setSuccess(false);
-            data.setError(e.getMessage());
+            data.setStatus(false);
+            data.setData(e.getMessage());
         }
         return data;
     }
     @ApiOperation("添加一条空数据")
     @RequestMapping(value="/saveempty",method = {RequestMethod.POST})
     @ResponseBody
-    public ResposeData save()
+    public ResponseMessage save()
     {
-        ResposeData data =new ResposeData();
-        data.setSuccess(false);
+        ResponseMessage data =new ResponseMessage();
+        data.setStatus(false);
         try {
             String id= mService.addEmpty();
-            data.setSuccess(true);
+            data.setStatus(true);
             data.setData(id);
         }
         catch (Exception e)
         {
-            data.setSuccess(false);
-            data.setError(e.getMessage());
+            data.setStatus(false);
+            data.setData(e.getMessage());
         }
         return data;
     }
@@ -103,37 +103,37 @@ public class AbstractGateway<T extends AbstractService,E extends BaseModel> {
     )})
     @RequestMapping(value="/updateall",method = {RequestMethod.PUT})
     @ResponseBody
-    public ResposeData saveAll(@RequestBody List<E> datas)
+    public ResponseMessage saveAll(@RequestBody List<E> datas)
     {
-        ResposeData res =new ResposeData();
-        res.setSuccess(false);
+        ResponseMessage res =new ResponseMessage();
+        res.setStatus(false);
         try {
             mService.updateAll(datas);
-            res.setSuccess(true);
+            res.setStatus(true);
             res.setData(true);
         }
         catch (Exception e)
         {
-            res.setSuccess(false);
-            res.setError(e.getMessage());
+            res.setStatus(false);
+            res.setData(e.getMessage());
         }
         return res;
     }
     @RequestMapping(value="/update",method = {RequestMethod.PUT})
     @ResponseBody
-    public ResposeData save(@RequestBody E  data)
+    public ResponseMessage save(@RequestBody E  data)
     {
-        ResposeData res =new ResposeData();
-        res.setSuccess(false);
+        ResponseMessage res =new ResponseMessage();
+        res.setStatus(false);
         try {
             mService.update(data);
-            res.setSuccess(true);
+            res.setStatus(true);
             res.setData(true);
         }
         catch (Exception e)
         {
-            res.setSuccess(false);
-            res.setError(e.getMessage());
+            res.setStatus(false);
+            res.setData(e.getMessage());
         }
         return res;
     }
@@ -144,38 +144,38 @@ public class AbstractGateway<T extends AbstractService,E extends BaseModel> {
     )})
     @RequestMapping(value="/removeall",method = {RequestMethod.DELETE})
     @ResponseBody
-    public ResposeData removeAll(@RequestBody List<E> datas)
+    public ResponseMessage removeAll(@RequestBody List<E> datas)
     {
-        ResposeData data =new ResposeData();
-        data.setSuccess(false);
+        ResponseMessage data =new ResponseMessage();
+        data.setStatus(false);
         try {
             mService.removeAll(datas);
-            data.setSuccess(true);
+            data.setStatus(true);
             data.setData(true);
         }
         catch (Exception e)
         {
-            data.setSuccess(false);
-            data.setError(e.getMessage());
+            data.setStatus(false);
+            data.setData(e.getMessage());
         }
         return data;
     }
 
     @RequestMapping(value="/remove",method = {RequestMethod.DELETE})
     @ResponseBody
-    public ResposeData removeAll(@RequestBody E data)
+    public ResponseMessage removeAll(@RequestBody E data)
     {
-        ResposeData res =new ResposeData();
-        res.setSuccess(false);
+        ResponseMessage res =new ResponseMessage();
+        res.setStatus(false);
         try {
             mService.remove(data);
-            res.setSuccess(true);
+            res.setStatus(true);
             res.setData(true);
         }
         catch (Exception e)
         {
-            res.setSuccess(false);
-            res.setError(e.getMessage());
+            res.setStatus(false);
+            res.setData(e.getMessage());
         }
         return res;
     }

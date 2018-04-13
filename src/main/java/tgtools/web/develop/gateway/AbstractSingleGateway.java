@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import tgtools.json.JSONObject;
 import tgtools.util.StringUtil;
 import tgtools.web.develop.command.CommandFactory;
+import tgtools.web.develop.message.ResponseMessage;
 import tgtools.web.develop.message.ValidMessage;
 import tgtools.web.develop.service.UserService;
-import tgtools.web.entity.ResposeData;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,10 +48,10 @@ public abstract class AbstractSingleGateway<T extends UserService> {
      */
     @RequestMapping(value = "/gettoken", method = {RequestMethod.POST})
     @ResponseBody
-    public ResposeData getToken(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseMessage getToken(HttpServletRequest request, HttpServletResponse response) {
         String username = StringUtil.EMPTY_STRING;
         String password = StringUtil.EMPTY_STRING;
-        ResposeData result = new ResposeData();
+        ResponseMessage result = new ResponseMessage();
         try {
             JSONObject json = tgtools.web.util.RequestHelper.parseRequest(request);
             if (json.has("username")) {
@@ -62,11 +63,11 @@ public abstract class AbstractSingleGateway<T extends UserService> {
 
             mUserService.validLoginUser(username, password);
             String token = mUserService.createToken(username, request.getRemoteAddr());
-            result.setSuccess(true);
+            result.setStatus(true);
             result.setData(token);
         } catch (Exception e) {
-            result.setSuccess(false);
-            result.setError(e.getMessage());
+            result.setStatus(false);
+            result.setData(e.getMessage());
         }
         return result;
     }
@@ -81,8 +82,8 @@ public abstract class AbstractSingleGateway<T extends UserService> {
      */
     @RequestMapping(value = "/invoke", method = {RequestMethod.POST})
     @ResponseBody
-    public ResposeData invoke(HttpServletRequest request, HttpServletResponse response) {
-        ResposeData res = new ResposeData();
+    public ResponseMessage invoke(HttpServletRequest request, HttpServletResponse response) {
+        ResponseMessage res = new ResponseMessage();
         try {
             JSONObject json = tgtools.web.util.RequestHelper.parseRequest(request);
             ValidMessage rm = (ValidMessage) tgtools.util.JsonParseHelper.parseToObject(json, ValidMessage.class);
@@ -90,11 +91,11 @@ public abstract class AbstractSingleGateway<T extends UserService> {
             mUserService.tokenLogin(request.getRemoteAddr(), rm.getUser(), rm.getToken());
 
             Object obj = restCommand.process(rm.getOperation(), rm.getData());
-            res.setSuccess(true);
+            res.setStatus(true);
             res.setData(obj);
         } catch (Exception e) {
-            res.setSuccess(false);
-            res.setError(e.getMessage());
+            res.setStatus(false);
+            res.setData(e.getMessage());
         }
         try {
             System.out.println("client结果：" + tgtools.util.JsonParseHelper.parseToJsonObject(res).toString());

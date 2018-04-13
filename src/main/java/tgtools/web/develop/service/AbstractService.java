@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import tgtools.exceptions.APPErrorException;
 import tgtools.util.GUID;
 import tgtools.util.StringUtil;
+import tgtools.web.develop.message.GridMessage;
 import tgtools.web.develop.model.BaseModel;
-import tgtools.web.entity.GridData;
 import tk.mybatis.mapper.common.BaseMapper;
 
 import java.lang.reflect.Method;
@@ -27,6 +27,10 @@ public abstract class AbstractService<T extends BaseMapper> {
     @Autowired
     protected T mDao;
 
+    /**
+     * 返回基于 BaseModel 的 具体 实体类
+     * @return
+     */
     public abstract BaseModel createModel();
 
     /**
@@ -53,10 +57,10 @@ public abstract class AbstractService<T extends BaseMapper> {
      *
      * @return
      */
-    public GridData listPage(int pPageIndex, int pPageSize) {
-        GridData data = new GridData();
+    public GridMessage listPage(int pPageIndex, int pPageSize) {
+        GridMessage data = new GridMessage();
         data.setData(invokePage(pPageIndex, pPageSize));
-        data.setTotalRows(mDao.selectCount(null));
+        data.setTotal(mDao.selectCount(null));
         return data;
     }
 
