@@ -18,11 +18,15 @@ public class ModelHelper {
      */
     public static  String getTableName(Class<?> pClazz)
     {
-       Table table= pClazz.getAnnotation(Table.class);
-       if(null!=table)
-       {
+        Table table= pClazz.getAnnotation(Table.class);
+        if(null!=table)
+        {
             return table.name();
-       }
-       return StringUtil.EMPTY_STRING;
+        }
+        else if(!Object.class.equals(pClazz.getSuperclass()))
+        {
+            return getTableName(pClazz.getSuperclass());
+        }
+        return StringUtil.EMPTY_STRING;
     }
 }
