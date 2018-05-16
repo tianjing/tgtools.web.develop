@@ -5,6 +5,7 @@ import tgtools.web.develop.util.ModelHelper;
 import tgtools.web.util.PageSqlUtil;
 
 /**
+ * 模板方法类
  * @author 田径
  * @Title
  * @Description
@@ -26,18 +27,25 @@ public class AbstractModel {
         sql = PageSqlUtil.getPageDataSQL(sql,String.valueOf(pPageIndex),String.valueOf(pPageSize));
         return sql;
     }
+
     /**
      * 获取所有数据 根据rev排序
      * @return
      */
-    public String treeSql()
+    public String getAllDataSql()
     {
-        String tablename= ModelHelper.getTableName(this.getClass());
         String sql="select * from ${tablename} ";
-
+        String tablename= ModelHelper.getTableName(this.getClass());
+        sql= StringUtil.replace(sql,"${tablename}",tablename);
         return sql;
     }
 
-
-
+    /**
+     * 默认排序
+     * @return
+     */
+    public String getDefaultOrders()
+    {
+        return StringUtil.EMPTY_STRING;
+    }
 }

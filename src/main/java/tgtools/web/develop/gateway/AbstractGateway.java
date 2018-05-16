@@ -9,8 +9,8 @@ import tgtools.exceptions.APPErrorException;
 import tgtools.util.StringUtil;
 import tgtools.web.develop.message.GridMessage;
 import tgtools.web.develop.message.ResponseMessage;
-import tgtools.web.develop.model.BaseModel;
-import tgtools.web.develop.service.AbstractService;
+import tgtools.web.develop.model.CommonModel;
+import tgtools.web.develop.service.AbstractCommonService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +23,7 @@ import java.util.List;
  * @Description
  * @date 8:53
  */
-public class AbstractGateway<T extends AbstractService,E extends BaseModel> {
+public class AbstractGateway<T extends AbstractCommonService,E extends CommonModel> {
 
     @Autowired
     protected T mService;
@@ -64,7 +64,7 @@ public class AbstractGateway<T extends AbstractService,E extends BaseModel> {
             {
                 throw new APPErrorException("请输入id");
             }
-            BaseModel model =mService.createModel();
+            CommonModel model =mService.createModel();
             model.setId(id);
             Object entity= mService.get(model);
             data.setStatus(true);
