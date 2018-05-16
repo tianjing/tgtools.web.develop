@@ -1,5 +1,6 @@
 package tgtools.web.develop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import tgtools.util.StringUtil;
 import tgtools.web.develop.util.ModelHelper;
 import tgtools.web.util.PageSqlUtil;
@@ -19,6 +20,7 @@ public class AbstractModel {
      * @param pPageSize
      * @return
      */
+    @JsonIgnore
     public String pageSql(int pPageIndex, int pPageSize)
     {
         String tablename= ModelHelper.getTableName(this.getClass());
@@ -32,7 +34,7 @@ public class AbstractModel {
      * 获取所有数据 根据rev排序
      * @return
      */
-    public String getAllDataSql()
+    public String buildAllDataSql()
     {
         String sql="select * from ${tablename} ";
         String tablename= ModelHelper.getTableName(this.getClass());
@@ -44,7 +46,7 @@ public class AbstractModel {
      * 默认排序
      * @return
      */
-    public String getDefaultOrders()
+    public String buildDefaultOrders()
     {
         return StringUtil.EMPTY_STRING;
     }

@@ -23,12 +23,12 @@ public interface CommonModel {
      * 所有数据sql
      * @return
      */
-    String getAllDataSql();
+    String buildAllDataSql();
     /**
      * 默认排序
      * @return
      */
-    String getDefaultOrders();
+    String buildDefaultOrders();
     /**
      * 初始化新建信息
      */

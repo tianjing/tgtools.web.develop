@@ -73,12 +73,12 @@ public class BaseModel extends AbstractModel implements TemplateModel {
      * @return
      */
     @Override
-    public String getAllDataSql()
+    public String buildAllDataSql()
     {
         String sql="select * from ${tablename} ${order}";
         String tablename= ModelHelper.getTableName(this.getClass());
         sql= StringUtil.replace(sql,"${tablename}",tablename);
-        sql= StringUtil.replace(sql,"${order}",StringUtil.isNullOrEmpty(getDefaultOrders())?"":" order by "+getDefaultOrders());
+        sql= StringUtil.replace(sql,"${order}",StringUtil.isNullOrEmpty(buildDefaultOrders())?"":" order by "+buildDefaultOrders());
         return sql;
     }
 
@@ -87,7 +87,7 @@ public class BaseModel extends AbstractModel implements TemplateModel {
      * @return
      */
     @Override
-    public String getDefaultOrders()
+    public String buildDefaultOrders()
     {
         return "REV_ DESC";
     }

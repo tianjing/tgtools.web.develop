@@ -1,5 +1,6 @@
 package tgtools.web.develop.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import tgtools.util.GUID;
 import tgtools.util.StringUtil;
 
