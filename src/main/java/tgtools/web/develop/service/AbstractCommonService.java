@@ -85,7 +85,8 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
             try {
                 Method method = mDao.getClass().getDeclaredMethod("selectPage", Object.class, int.class, int.class);
                 if (null != method) {
-                    Object obj = method.invoke(mDao, createModel(), pPageIndex, pPageSize);
+                    //自定义分页是从1开始算的。
+                    Object obj = method.invoke(mDao, createModel(), pPageIndex+1, pPageSize);
                     if (null != obj) {
                         return (Collection) obj;
                     }
