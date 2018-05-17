@@ -1,6 +1,7 @@
 package tgtools.web.develop.service;
 
 
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import tgtools.exceptions.APPErrorException;
@@ -10,6 +11,7 @@ import tgtools.web.develop.message.GridMessage;
 import tgtools.web.develop.model.CommonModel;
 import tgtools.web.develop.model.TemplateModel;
 import tk.mybatis.mapper.common.BaseMapper;
+import tk.mybatis.mapper.common.Mapper;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -74,16 +76,23 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
         return mDao.selectOne(pData);
     }
     protected Collection invokePage(int pPageIndex, int pPageSize) {
-        try {
-            Method method = mDao.getClass().getDeclaredMethod("page", Integer.class, Integer.class);
-            if (null != method) {
-                Object obj = method.invoke(mDao, pPageIndex, pPageSize);
-                if (null != obj) {
-                    return (Collection) obj;
+        if(mDao instanceof  Mapper)
+        {
+            Mapper mapper= (Mapper)mDao;
+            return mapper.selectByRowBounds(createModel(),new RowBounds(pPageIndex,pPageSize));
+        }
+        else {
+            try {
+                Method method = mDao.getClass().getDeclaredMethod("selectPage", Object.class, int.class, int.class);
+                if (null != method) {
+                    Object obj = method.invoke(mDao, createModel(), pPageIndex, pPageSize);
+                    if (null != obj) {
+                        return (Collection) obj;
+                    }
                 }
-            }
-        } catch (Exception ex) {
+            } catch (Exception ex) {
 
+            }
         }
         return new ArrayList(0);
     }
