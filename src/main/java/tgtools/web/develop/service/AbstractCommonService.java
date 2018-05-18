@@ -10,10 +10,10 @@ import tgtools.util.StringUtil;
 import tgtools.web.develop.message.GridMessage;
 import tgtools.web.develop.model.CommonModel;
 import tgtools.web.develop.model.TemplateModel;
+import tgtools.web.develop.tkmybatis.mapper.common.page.BaseSelectPageMapper;
+import tgtools.web.develop.tkmybatis.mapper.common.page.MysqlSelectPageMapper;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.Mapper;
-
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,27 +75,28 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
     public Object get(Object pData) {
         return mDao.selectOne(pData);
     }
+
+    /**
+     * 获取分页数据
+     * @param pPageIndex
+     * @param pPageSize
+     * @return
+     */
     protected Collection invokePage(int pPageIndex, int pPageSize) {
-        if(mDao instanceof  Mapper)
+        if(mDao instanceof BaseSelectPageMapper)
+        {
+            ((BaseSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
+        }
+        else if( mDao instanceof MysqlSelectPageMapper)
+        {
+            ((MysqlSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
+        }
+        else if(mDao instanceof  Mapper)
         {
             Mapper mapper= (Mapper)mDao;
-            return mapper.selectByRowBounds(createModel(),new RowBounds(pPageIndex,pPageSize));
+            return mapper.selectByRowBounds(createModel(),new RowBounds(pPageIndex-1,pPageSize));
         }
-        else {
-            try {
-                Method method = mDao.getClass().getDeclaredMethod("selectPage", Object.class, int.class, int.class);
-                if (null != method) {
-                    //自定义分页是从1开始算的。
-                    Object obj = method.invoke(mDao, createModel(), pPageIndex+1, pPageSize);
-                    if (null != obj) {
-                        return (Collection) obj;
-                    }
-                }
-            } catch (Exception ex) {
-
-            }
-        }
-        return new ArrayList(0);
+        return new ArrayList();
     }
 
     /**

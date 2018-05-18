@@ -18,25 +18,25 @@ import javax.persistence.Id;
 public class BaseModel extends AbstractModel implements TemplateModel {
     @Id
     @Column(name="ID_")
-    private String mId;
+    private String Id;
     @Column(name="REV_")
-    private Long mRev;
+    private Long Rev;
 
     @Override
     public String getId() {
-        return mId;
+        return Id;
     }
     @Override
     public void setId(String pId) {
-        mId = pId;
+        Id = pId;
     }
     @Override
     public Long getRev() {
-        return mRev;
+        return Rev;
     }
     @Override
     public void setRev(Long pRev) {
-        mRev = pRev;
+        Rev = pRev;
     }
     /**
      * 通用分页sql

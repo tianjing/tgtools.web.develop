@@ -17,15 +17,15 @@ import javax.persistence.Id;
 public class BaseCommonModel extends AbstractModel implements CommonModel {
     @Id
     @Column(name="ID_")
-    private String mId;
+    private String Id;
 
     @Override
     public String getId() {
-        return mId;
+        return Id;
     }
     @Override
     public void setId(String pId) {
-        mId = pId;
+        Id = pId;
     }
 
 

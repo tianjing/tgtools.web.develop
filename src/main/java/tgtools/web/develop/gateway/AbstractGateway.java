@@ -49,7 +49,7 @@ public class AbstractGateway<T extends AbstractCommonService,E extends CommonMod
     @ResponseBody
     public GridMessage list(@RequestParam("pageIndex") int pPageIndex, @RequestParam("pageSize") int pPageSize)
     {
-        return mService.listPage(pPageIndex,pPageSize);
+        return mService.listPage(pPageIndex+1,pPageSize);
     }
 
     @ApiOperation("根据ID获取数据")
