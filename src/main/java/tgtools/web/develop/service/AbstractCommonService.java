@@ -25,22 +25,17 @@ import java.util.List;
  * @Description
  * @date 19:14
  */
-public abstract class AbstractCommonService<T extends BaseMapper> {
+public abstract class AbstractCommonService<T extends BaseMapper> implements CommonService<T> {
 
     @Autowired
     protected T mDao;
-
-    /**
-     * 返回基于 BaseModel 的 具体 实体类
-     * @return
-     */
-    public abstract CommonModel createModel();
 
     /**
      * 获取分所有数据
      *
      * @return
      */
+    @Override
     public List listAll() {
         return mDao.selectAll();
     }
@@ -49,6 +44,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @return
      */
+    @Override
     public List list(Object pParam) {
         return mDao.select(pParam);
     }
@@ -60,6 +56,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @return
      */
+    @Override
     public GridMessage listPage(int pPageIndex, int pPageSize) {
         GridMessage data = new GridMessage();
         data.setData(invokePage(pPageIndex, pPageSize));
@@ -72,6 +69,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      * @param pData
      * @return
      */
+    @Override
     public Object get(Object pData) {
         return mDao.selectOne(pData);
     }
@@ -85,11 +83,11 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
     protected Collection invokePage(int pPageIndex, int pPageSize) {
         if(mDao instanceof BaseSelectPageMapper)
         {
-            ((BaseSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
+            return ((BaseSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
         }
         else if( mDao instanceof MysqlSelectPageMapper)
         {
-            ((MysqlSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
+            return ((MysqlSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
         }
         else if(mDao instanceof  Mapper)
         {
@@ -104,6 +102,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @return
      */
+    @Override
     public String save(Object pData) {
         String id =GUID.newGUID();
         if(pData instanceof TemplateModel)
@@ -125,8 +124,8 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @return
      */
+    @Override
     public String addEmpty() {
-        createModel();
         String id = GUID.newGUID();
         CommonModel entity =createModel();
         entity.initNew();
@@ -141,6 +140,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @throws APPErrorException
      */
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAll(List pDatas) throws APPErrorException {
         for (int i = 0; i < pDatas.size(); i++) {
@@ -155,6 +155,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @throws APPErrorException
      */
+    @Override
     public void update(Object pData) throws APPErrorException {
         valid(pData);
         mDao.updateByPrimaryKey(pData);
@@ -193,6 +194,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @throws APPErrorException
      */
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void removeAll(List pDatas) throws APPErrorException {
         for (int i = 0; i < pDatas.size(); i++) {
@@ -207,6 +209,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> {
      *
      * @throws APPErrorException
      */
+    @Override
     public void remove(Object pData) throws APPErrorException {
         mDao.deleteByPrimaryKey(pData);
     }

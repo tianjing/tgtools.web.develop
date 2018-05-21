@@ -37,7 +37,7 @@ public abstract class AbstractCommand<T> implements Command {
      */
     protected void invoke(Object pObject) throws APPErrorException {
         try {
-            Method method= mService.getClass().getDeclaredMethod(getMethodName(),getModelClass());
+            Method method =tgtools.util.ReflectionUtil.findMethod(mService.getClass(),getMethodName(),getModelClass());
             method.invoke(mService,pObject);
         }catch (Exception ex)
         {
@@ -56,5 +56,27 @@ public abstract class AbstractCommand<T> implements Command {
         Object obj = tgtools.util.JsonParseHelper.parseToObject(params[0].toString(),getModelClass(),false);
         invoke(obj);
         return true;
+    }
+    /**
+     * 映射方法
+     * @param pObject
+     * @throws APPErrorException
+     */
+    protected Object invokeByReturn(Object pObject) throws APPErrorException {
+        try {
+            Method method=null;
+            if(null==getModelClass())
+            {
+                method =tgtools.util.ReflectionUtil.findMethod(mService.getClass(),getMethodName());
+                return method.invoke(mService);
+            }
+            else {
+                method =tgtools.util.ReflectionUtil.findMethod(mService.getClass(),getMethodName(),getModelClass());
+                return method.invoke(mService,pObject);
+            }
+        }catch (Exception ex)
+        {
+            throw new APPErrorException("执行方法错误；原因："+ex.getCause().getMessage(),ex);
+        }
     }
 }
