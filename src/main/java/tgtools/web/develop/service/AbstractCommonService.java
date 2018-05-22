@@ -25,12 +25,20 @@ import java.util.List;
  * @Description
  * @date 19:14
  */
-public abstract class AbstractCommonService<T extends BaseMapper> implements CommonService<T> {
+public abstract class AbstractCommonService<T extends BaseMapper> implements CommonService<T>
+ {
 
     @Autowired
     protected T mDao;
 
-    /**
+     /**
+      * 返回基于 BaseModel 的 具体 实体类
+      * @return
+      */
+     @Override
+    public abstract CommonModel createModel();
+
+     /**
      * 获取分所有数据
      *
      * @return
@@ -209,7 +217,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      *
      * @throws APPErrorException
      */
-    @Override
+   @Override
     public void remove(Object pData) throws APPErrorException {
         mDao.deleteByPrimaryKey(pData);
     }
