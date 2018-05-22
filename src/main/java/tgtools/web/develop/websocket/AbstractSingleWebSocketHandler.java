@@ -10,6 +10,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import tgtools.exceptions.APPErrorException;
 import tgtools.json.JSONObject;
+import tgtools.util.LogHelper;
 import tgtools.web.develop.command.CommandFactory;
 import tgtools.web.develop.message.NotifyMessage;
 import tgtools.web.develop.message.ResponseMessage;
@@ -65,7 +66,8 @@ public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHa
                 data.setData(e.getMessage());
                 webSocketSession.sendMessage(new TextMessage(tgtools.util.JsonParseHelper.parseToJsonObject(data).toString()));
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogHelper.error("","AbstractSingleWebSocketHandler 初始化失败；原因："+e.toString(),"AbstractSingleWebSocketHandler.handleMessage",e);
+
             }
         }
 

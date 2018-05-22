@@ -2,6 +2,7 @@ package tgtools.web.develop.command;
 
 import tgtools.exceptions.APPErrorException;
 import tgtools.interfaces.IDispose;
+import tgtools.util.LogHelper;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -61,7 +62,7 @@ public class CommandFactory implements Closeable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogHelper.error("","CommandFactory 初始化失败；原因："+e.toString(),"CommandFactory.init",e);
         }
     }
 

@@ -9,6 +9,7 @@ import tgtools.exceptions.APPErrorException;
 import tgtools.json.JSONObject;
 import tgtools.message.IMessageListening;
 import tgtools.message.Message;
+import tgtools.util.LogHelper;
 import tgtools.util.StringUtil;
 import tgtools.web.platform.PlatformDispatcherServletFactory;
 
@@ -37,7 +38,7 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler, Clos
              */
             tgtools.message.MessageFactory.registerListening(new MyMessageListen(getServletName(),getUrl()));
         } catch (APPErrorException e) {
-            e.printStackTrace();
+            LogHelper.error("","AbstractWebSocketHandler 初始化失败；原因："+e.toString(),"AbstractWebSocketHandler.init",e);
         }
     }
 
