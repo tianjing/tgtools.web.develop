@@ -7,10 +7,7 @@ package tgtools.web.develop.model;
  * @Description
  * @date 8:45
  */
-public interface CommonModel {
-    String getId();
-    void setId(String pId);
-
+public interface CommonModel extends DataModel {
     /**
      * 通用分页sql
      * @param pPageIndex
