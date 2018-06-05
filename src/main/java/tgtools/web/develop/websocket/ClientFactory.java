@@ -3,8 +3,10 @@ package tgtools.web.develop.websocket;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import tgtools.exceptions.APPErrorException;
+import tgtools.util.LogHelper;
 import tgtools.web.develop.websocket.listener.ClientFactoryListener;
 import tgtools.web.develop.websocket.listener.event.AddClientEvent;
+import tgtools.web.develop.websocket.listener.event.ChangeClientEvent;
 import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 
 import java.io.Closeable;
@@ -24,6 +26,26 @@ public class ClientFactory implements Closeable {
 
     protected ClientFactoryListener mClientFactoryListener;
 
+    /**
+     * 是否存在用户连接
+     * @param pLoginName 登录名
+     * @return
+     */
+    public boolean hasClient(String pLoginName)
+    {
+        return mClients.containsKey(pLoginName);
+    }
+
+    /**
+     * 是否存在用户连接
+     * @param pWebSocketSession 连接对象
+     * @return
+     */
+    public boolean hasClient(WebSocketSession pWebSocketSession)
+    {
+        return mClients.containsValue(pWebSocketSession);
+    }
+
     public void setClientFactoryListener(ClientFactoryListener pClientFactoryListener) {
         mClientFactoryListener = pClientFactoryListener;
     }
@@ -36,10 +58,25 @@ public class ClientFactory implements Closeable {
      */
     public void addClient(String pUserName, WebSocketSession pClient) {
         if (!mClients.containsKey(pUserName)) {
+            LogHelper.info("", "增加客户端；name:" + pUserName, "MyClientFactory.addClient");
             mClients.put(pUserName, pClient);
             onAddClient(pUserName, pClient);
+        } else {
+            if (!mClients.get(pUserName).getId().equals(pClient.getId()) && mClients.get(pUserName).isOpen()) {
+                changeClient(pUserName, pClient);
+            }
         }
     }
+
+    public void changeClient(String pUserName, WebSocketSession pClient) {
+        ChangeClientEvent event=new ChangeClientEvent(pUserName,pClient,false);
+        onChangeClient(event);
+        if(!event.getCancelChange()) {
+            mClients.remove(pUserName);
+            mClients.put(pUserName, pClient);
+        }
+    }
+
 
     /**
      * 根据value 删除客户端
@@ -103,7 +140,15 @@ public class ClientFactory implements Closeable {
             }
         }
     }
-
+    /**
+     * 添加用户事件
+     * @param pChangeClientEvent
+     */
+    protected void onChangeClient(ChangeClientEvent pChangeClientEvent) {
+        if (null != mClientFactoryListener) {
+            mClientFactoryListener.changeClient(this, pChangeClientEvent);
+        }
+    }
     /**
      * 添加用户事件
      * @param pUserName

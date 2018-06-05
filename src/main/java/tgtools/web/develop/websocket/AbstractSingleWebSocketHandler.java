@@ -34,8 +34,17 @@ public abstract class AbstractSingleWebSocketHandler extends AbstractWebSocketHa
     }
 
     protected abstract String getCommandType();
-    protected CommandFactory mWebsocketCommand;
-    protected ClientFactory mClientFactory;
+    private CommandFactory mWebsocketCommand;
+    private ClientFactory mClientFactory;
+
+    public CommandFactory getCommandFactory()
+    {
+        return mWebsocketCommand;
+    }
+    public ClientFactory getClientFactory()
+    {
+        return mClientFactory;
+    }
 
 
     protected abstract SecurityManager getSecurityManager();

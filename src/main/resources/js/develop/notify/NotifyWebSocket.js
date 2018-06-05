@@ -83,6 +83,8 @@ function NotifyWebSocket(url, option) {
             else {
                 alert(data.error);
             }
+        }else {
+            console.log("no process:" +e.data);
         }
     };
 

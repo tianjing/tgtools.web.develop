@@ -31,6 +31,8 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
     @Autowired
     protected T mDao;
 
+    public T getDao()
+    {return mDao;}
      /**
       * 返回基于 BaseModel 的 具体 实体类
       * @return
