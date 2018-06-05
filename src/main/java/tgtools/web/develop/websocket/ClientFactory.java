@@ -69,10 +69,16 @@ public class ClientFactory implements Closeable {
     }
 
     public void changeClient(String pUserName, WebSocketSession pClient) {
-        ChangeClientEvent event=new ChangeClientEvent(pUserName,pClient,false);
+        ChangeClientEvent event=new ChangeClientEvent(pUserName,pClient,mClients.get(pUserName),false);
         onChangeClient(event);
         if(!event.getCancelChange()) {
+            WebSocketSession client = mClients.get(pUserName);
             mClients.remove(pUserName);
+            try {
+                client.close();
+            } catch (IOException e) {
+                LogHelper.error("","关闭连接出错；原因："+e.toString(),"changeClient",e);
+            }
             mClients.put(pUserName, pClient);
         }
     }

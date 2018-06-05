@@ -12,11 +12,12 @@ import tgtools.web.develop.websocket.ClientFactory;
  */
 public class ChangeClientEvent extends Event {
     public ChangeClientEvent(){}
-    public ChangeClientEvent(String pLoginName, WebSocketSession pWebSocketSession,boolean pCancelChange)
+    public ChangeClientEvent(String pLoginName, WebSocketSession pNewClient, WebSocketSession pOldClient,boolean pCancelChange)
     {
         mLoginName=pLoginName;
-        mWebSocketSession=pWebSocketSession;
         mCancelChange=pCancelChange;
+        mNewClient=pNewClient;
+        mOldClient=pOldClient;
     }
 
     /**
@@ -30,14 +31,19 @@ public class ChangeClientEvent extends Event {
     /**
      * 连接对象
      */
-    private WebSocketSession mWebSocketSession;
+    private WebSocketSession mNewClient;
+    private WebSocketSession mOldClient;
+
+    public WebSocketSession getNewClient() {
+        return mNewClient;
+    }
+
+    public WebSocketSession getOldClient() {
+        return mOldClient;
+    }
 
     public String getLoginName() {
         return mLoginName;
-    }
-
-    public WebSocketSession getWebSocketSession() {
-        return mWebSocketSession;
     }
 
     public boolean getCancelChange() {
