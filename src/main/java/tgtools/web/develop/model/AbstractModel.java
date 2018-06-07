@@ -5,6 +5,8 @@ import tgtools.util.StringUtil;
 import tgtools.web.develop.util.ModelHelper;
 import tgtools.web.util.PageSqlUtil;
 
+import java.io.Serializable;
+
 /**
  * 模板方法类
  * @author 田径
@@ -12,7 +14,8 @@ import tgtools.web.util.PageSqlUtil;
  * @Description
  * @date 18:47
  */
-public class AbstractModel {
+public class AbstractModel implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * 通用分页sql
