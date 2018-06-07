@@ -9,6 +9,7 @@ import java.io.Serializable;
  * @date 9:08
  */
 public interface DataModel extends Serializable {
+
     String getId();
     void setId(String pId);
 }

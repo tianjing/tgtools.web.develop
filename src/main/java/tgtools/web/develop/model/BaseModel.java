@@ -7,6 +7,7 @@ import tgtools.web.util.PageSqlUtil;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 /**
  * 含有 ID_ 和 REV_ 的表实体类
@@ -16,6 +17,7 @@ import javax.persistence.Id;
  * @date 18:47
  */
 public class BaseModel extends AbstractModel implements TemplateModel {
+    private static final long serialVersionUID = -6291445164608299836L;
     @Id
     @Column(name="ID_")
     private String Id;

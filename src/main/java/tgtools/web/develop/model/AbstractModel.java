@@ -14,8 +14,9 @@ import java.io.Serializable;
  * @Description
  * @date 18:47
  */
-public class AbstractModel implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class AbstractModel implements Serializable{
+
+    private static final long serialVersionUID = -1163785635879460667L;
 
     /**
      * 通用分页sql
