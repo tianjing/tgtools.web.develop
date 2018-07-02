@@ -4,6 +4,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import tgtools.exceptions.APPErrorException;
 import tgtools.util.LogHelper;
+import tgtools.util.StringUtil;
 import tgtools.web.develop.websocket.listener.ClientFactoryListener;
 import tgtools.web.develop.websocket.listener.event.AddClientEvent;
 import tgtools.web.develop.websocket.listener.event.ChangeClientEvent;
@@ -11,6 +12,8 @@ import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -28,21 +31,53 @@ public class ClientFactory implements Closeable {
 
     /**
      * 是否存在用户连接
+     *
      * @param pLoginName 登录名
+     *
      * @return
      */
-    public boolean hasClient(String pLoginName)
-    {
+    public boolean hasClient(String pLoginName) {
         return mClients.containsKey(pLoginName);
     }
 
     /**
-     * 是否存在用户连接
-     * @param pWebSocketSession 连接对象
+     * 获取用户名称
+     *
+     * @param pClient
+     *
      * @return
      */
-    public boolean hasClient(WebSocketSession pWebSocketSession)
-    {
+    public String getName(WebSocketSession pClient) {
+        for (Map.Entry<String, WebSocketSession> item : mClients.entrySet()) {
+            if (item.getValue().equals(pClient) || item.getValue().getId().equals(pClient.getId())) {
+                return item.getKey();
+            }
+        }
+        return StringUtil.EMPTY_STRING;
+    }
+
+    /**
+     * 根据名称获取 WebSocket 连接对象
+     *
+     * @param pLoginName
+     *
+     * @return
+     */
+    public WebSocketSession getCient(String pLoginName) {
+        if (!mClients.contains(pLoginName)) {
+            return null;
+        }
+        return mClients.get(pLoginName);
+    }
+
+    /**
+     * 是否存在用户连接
+     *
+     * @param pWebSocketSession 连接对象
+     *
+     * @return
+     */
+    public boolean hasClient(WebSocketSession pWebSocketSession) {
         return mClients.containsValue(pWebSocketSession);
     }
 
@@ -69,15 +104,15 @@ public class ClientFactory implements Closeable {
     }
 
     public void changeClient(String pUserName, WebSocketSession pClient) {
-        ChangeClientEvent event=new ChangeClientEvent(pUserName,pClient,mClients.get(pUserName),false);
+        ChangeClientEvent event = new ChangeClientEvent(pUserName, pClient, mClients.get(pUserName), false);
         onChangeClient(event);
-        if(!event.getCancelChange()) {
+        if (!event.getCancelChange()) {
             WebSocketSession client = mClients.get(pUserName);
             mClients.remove(pUserName);
             try {
                 client.close();
             } catch (IOException e) {
-                LogHelper.error("","关闭连接出错；原因："+e.toString(),"changeClient",e);
+                LogHelper.error("", "关闭连接出错；原因：" + e.toString(), "changeClient", e);
             }
             mClients.put(pUserName, pClient);
         }
@@ -90,13 +125,7 @@ public class ClientFactory implements Closeable {
      * @param pClient
      */
     public void removeClient(WebSocketSession pClient) {
-        for (ConcurrentHashMap.Entry<String, WebSocketSession> item : mClients.entrySet()) {
-            if (item.getValue().equals(pClient)) {
-                mClients.remove(item.getKey());
-                onRemoveClient(item.getKey());
-                return;
-            }
-        }
+        removeClient(getName(pClient));
     }
 
     /**
@@ -106,8 +135,18 @@ public class ClientFactory implements Closeable {
      */
     public void removeClient(String pUserName) {
         if (mClients.containsKey(pUserName)) {
+            WebSocketSession pClient = mClients.get(pUserName);
+            String id = pClient.getId();
+            String vAddress = pClient.getRemoteAddress().getAddress().getHostAddress();
+            try {
+                if (pClient.isOpen()) {
+                    pClient.close();
+                }
+            } catch (Exception e) {
+            }
+            pClient = null;
             mClients.remove(pUserName);
-            onRemoveClient(pUserName);
+            onRemoveClient(pUserName, id, vAddress);
         }
     }
 
@@ -120,12 +159,20 @@ public class ClientFactory implements Closeable {
      * @throws APPErrorException
      */
     public void sendMessage(String pUserName, TextMessage pMessage) throws APPErrorException {
-        if (mClients.containsKey(pUserName)) {
-            try {
-                mClients.get(pUserName).sendMessage(pMessage);
-            } catch (IOException e) {
-                throw new APPErrorException("发送消息失败；原因：" + e.getMessage(), e);
-            }
+        validOnline(pUserName);
+        try {
+            mClients.get(pUserName).sendMessage(pMessage);
+        } catch (IOException e) {
+            throw new APPErrorException("发送消息失败；原因：" + e.getMessage(), e);
+        }
+    }
+
+    protected void validOnline(String pUserName) throws APPErrorException {
+        if (!mClients.containsKey(pUserName)) {
+            throw new APPErrorException("发送消息失败；原因：用户不存在；用户：" + pUserName);
+        }
+        if (!mClients.get(pUserName).isOpen()) {
+            throw new APPErrorException("发送消息失败；原因：用户连接已关闭；用户：" + pUserName);
         }
     }
 
@@ -138,16 +185,17 @@ public class ClientFactory implements Closeable {
      * @throws APPErrorException
      */
     public void sendMessage(String pUserName, String pMessage) throws APPErrorException {
-        if (mClients.containsKey(pUserName)) {
-            try {
-                mClients.get(pUserName).sendMessage(new TextMessage(pMessage));
-            } catch (IOException e) {
-                throw new APPErrorException("发送消息失败；原因：" + e.getMessage(), e);
-            }
+        validOnline(pUserName);
+        try {
+            mClients.get(pUserName).sendMessage(new TextMessage(pMessage));
+        } catch (IOException e) {
+            throw new APPErrorException("发送消息失败；原因：" + e.getMessage(), e);
         }
     }
+
     /**
      * 添加用户事件
+     *
      * @param pChangeClientEvent
      */
     protected void onChangeClient(ChangeClientEvent pChangeClientEvent) {
@@ -155,8 +203,10 @@ public class ClientFactory implements Closeable {
             mClientFactoryListener.changeClient(this, pChangeClientEvent);
         }
     }
+
     /**
      * 添加用户事件
+     *
      * @param pUserName
      * @param pClient
      */
@@ -168,18 +218,19 @@ public class ClientFactory implements Closeable {
 
     /**
      * 删除用户事件
+     *
      * @param pUserName
      */
-    protected void onRemoveClient(String pUserName) {
+    protected void onRemoveClient(String pUserName, String pId, String pAddress) {
         if (null != mClientFactoryListener) {
-            mClientFactoryListener.removeClient(this, new RemoveClientEvent(pUserName));
+            mClientFactoryListener.removeClient(this, new RemoveClientEvent(pUserName, pId, pAddress));
         }
     }
+
     @Override
-    public void close()  {
-        mClientFactoryListener =null;
-        for(WebSocketSession session :mClients.values())
-        {
+    public void close() {
+        mClientFactoryListener = null;
+        for (WebSocketSession session : mClients.values()) {
             try {
                 session.close();
             } catch (IOException e) {

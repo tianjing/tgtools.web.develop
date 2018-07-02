@@ -1,5 +1,6 @@
 package tgtools.web.develop.websocket.listener.event;
 
+import org.springframework.web.socket.WebSocketSession;
 import tgtools.interfaces.Event;
 
 /**
@@ -11,13 +12,24 @@ import tgtools.interfaces.Event;
 public class RemoveClientEvent extends Event {
 
     public RemoveClientEvent(){}
-    public RemoveClientEvent(String pLoginName)
+    public RemoveClientEvent(String pLoginName,String pId,String pAddress)
     {
-        mLoginName=pLoginName;
+        loginName=pLoginName;
     }
-    private String mLoginName;
+    private String loginName;
+    private String id;
+    private String address;
+
 
     public String getLoginName() {
-        return mLoginName;
+        return loginName;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getAddress() {
+        return address;
     }
 }

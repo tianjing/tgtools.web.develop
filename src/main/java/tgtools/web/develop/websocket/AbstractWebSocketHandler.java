@@ -44,22 +44,22 @@ public abstract class AbstractWebSocketHandler implements WebSocketHandler, Clos
 
     @Override
     public void afterConnectionEstablished(WebSocketSession webSocketSession) throws Exception {
-        System.out.println("afterConnectionEstablished id:" + webSocketSession.getId());
+        LogHelper.info("","afterConnectionEstablished id:" + webSocketSession.getId(),"afterConnectionEstablished");
     }
 
     @Override
     public void handleMessage(WebSocketSession webSocketSession, WebSocketMessage<?> webSocketMessage) throws Exception {
-        System.out.println("handleMessage id:" + webSocketSession.getId());
+        LogHelper.info("","handleMessage id:" + webSocketSession.getId(),"handleMessage");
     }
 
     @Override
     public void handleTransportError(WebSocketSession webSocketSession, Throwable throwable) throws Exception {
-        System.out.println("handleTransportError id:" + webSocketSession.getId());
+        LogHelper.info("","handleTransportError id:" + webSocketSession.getId(),"");
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
-        System.out.println("afterConnectionClosed id:" + webSocketSession.getId());
+        LogHelper.info("","afterConnectionClosed id:" + webSocketSession.getId(),"");
     }
 
     @Override

@@ -20,25 +20,25 @@ public class BaseModel extends AbstractModel implements TemplateModel {
     private static final long serialVersionUID = -6291445164608299836L;
     @Id
     @Column(name="ID_")
-    private String Id;
+    private String id;
     @Column(name="REV_")
-    private Long Rev;
+    private Long rev;
 
     @Override
     public String getId() {
-        return Id;
+        return id;
     }
     @Override
     public void setId(String pId) {
-        Id = pId;
+        id = pId;
     }
     @Override
     public Long getRev() {
-        return Rev;
+        return rev;
     }
     @Override
     public void setRev(Long pRev) {
-        Rev = pRev;
+        rev = pRev;
     }
     /**
      * 通用分页sql

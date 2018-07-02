@@ -136,11 +136,10 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      */
     @Override
     public String addEmpty() {
-        String id = GUID.newGUID();
         CommonModel entity =createModel();
         entity.initNew();
         mDao.insert(entity);
-        return id;
+        return entity.getId();
     }
 
     /**
