@@ -55,8 +55,8 @@ tgtools.util.url.getQueryString = function (name) {
 };
 /** @namespace tgtools.net */
 tgtools.net = {};
-tgtools.net.useMiniuiLoading=function(){
-   return 'undefined' != typeof mini;
+tgtools.net.useMiniuiLoading = function () {
+    return 'undefined' != typeof mini;
 };
 
 tgtools.net.getAjaxData = function (url, data1) {
@@ -223,13 +223,15 @@ tgtools.net.rest.invoke = function (url, method, datatype, data, async, successc
         "success": function (data) {
             if (data.status == undefined) {
                 successcall(data);
-            }
-            else if (data.status) {
+            } else if (data.status) {
                 var result;
                 try {
-                    result = eval("(" + data.data + ")");
-                }
-                catch (e) {
+                    if ("string" === typeof (data.data) && (data.data.startsWith("{") || data.data.startsWith("["))) {
+                        result = eval("(" + data.data + ")");
+                    } else {
+                        result = data.data;
+                    }
+                } catch (e) {
                     result = data.data;
                 }
                 if ("function" == typeof (successcall)) {
@@ -247,8 +249,7 @@ tgtools.net.rest.invoke = function (url, method, datatype, data, async, successc
                 var start = error.indexOf("window.top.location.href=");
                 var end = error.indexOf("</script>");
                 eval(error.substring(start, end));
-            }
-            else if ("function" == typeof (errorcall)) {
+            } else if ("function" == typeof (errorcall)) {
                 errorcall(e);
             }
         }
