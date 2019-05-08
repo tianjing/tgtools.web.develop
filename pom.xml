@@ -44,13 +44,8 @@
     <dependencies>
         <dependency>
             <groupId>com.github.tianjing</groupId>
-            <artifactId>tgtools.core</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.tianjing</groupId>
             <artifactId>tgtools.web</artifactId>
-            <version>1.1.1</version>
+            <version>1.1.4</version>
         </dependency>
         <!-- spring-->
         <dependency>
