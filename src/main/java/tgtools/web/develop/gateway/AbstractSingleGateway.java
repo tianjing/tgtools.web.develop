@@ -32,6 +32,11 @@ public abstract class AbstractSingleGateway<T extends UserService> {
     protected T mUserService;
 
     public AbstractSingleGateway() {
+        init();
+    }
+
+    protected void init()
+    {
         restCommand = new CommandFactory(getCommandType());
         restCommand.init();
     }
