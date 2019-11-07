@@ -12,6 +12,7 @@ import tgtools.web.develop.websocket.listener.event.RemoveClientEvent;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +41,24 @@ public class ClientFactory implements Closeable {
         return mClients.containsKey(pLoginName);
     }
 
+
+    /**
+     * 获取当前所有用户信息用户名称
+     * @return
+     */
+    public Map<String, WebSocketSession> getClientMap() {
+        return this.mClients;
+    }
+
+
+    /**
+     * 获取当前所有用户信息用户名称
+     * @return
+     */
+    public Enumeration<String> getNames() {
+        return this.mClients.keys();
+    }
+
     /**
      * 获取用户名称
      *
@@ -63,13 +82,26 @@ public class ClientFactory implements Closeable {
      *
      * @return
      */
+    @Deprecated
     public WebSocketSession getCient(String pLoginName) {
         if (!mClients.contains(pLoginName)) {
             return null;
         }
         return mClients.get(pLoginName);
     }
-
+    /**
+     * 根据名称获取 WebSocket 连接对象
+     *
+     * @param pLoginName
+     *
+     * @return
+     */
+    public WebSocketSession getClient(String pLoginName) {
+        if (!mClients.contains(pLoginName)) {
+            return null;
+        }
+        return mClients.get(pLoginName);
+    }
     /**
      * 是否存在用户连接
      *
