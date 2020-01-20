@@ -92,7 +92,7 @@ public class AbstractCommonGateway<T extends AbstractCommonService, E extends Co
         return data;
     }
 
-    @ApiOperation("添加一条空数据")
+    @ApiOperation("添加一条数据")
     @RequestMapping(value = "/saveone", method = {RequestMethod.POST})
     @ResponseBody
     public ResponseMessage saveOne(@RequestBody E model) {
