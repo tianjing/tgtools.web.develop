@@ -24,5 +24,8 @@ public interface BaseSelectPageMapper<T> {
     @SelectProvider(type= BaseSelectPageProvider.class,method = "dynamicSQL")
     List<T> selectPageLimitByFilterAndOrder(@Param("record") T record, @Param("filter") String pFilter ,@Param("order") String pOrder, @Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
 
+    @SelectProvider(type= BaseSelectPageProvider.class,method = "dynamicSQL")
+    int selectCountByFilter(@Param("record") T record, @Param("filter") String pFilter);
+
 
 }

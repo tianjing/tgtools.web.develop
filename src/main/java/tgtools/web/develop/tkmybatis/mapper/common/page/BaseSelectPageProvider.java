@@ -65,7 +65,7 @@ public class BaseSelectPageProvider extends MapperTemplate {
         return Constants.SQLs.Page_GetPageData_Limit_SQL;
     }
 
-    /**
+     /**
      * 分页 sql
      *
      * @return
@@ -74,6 +74,14 @@ public class BaseSelectPageProvider extends MapperTemplate {
         return Constants.SQLs.Page_GetPageData_SQL;
     }
 
+    /**
+     * 分页 sql
+     *
+     * @return
+     */
+    public String getCountSql() {
+        return Constants.SQLs.Page_GetCountData_SQL;
+    }
 
     /**
      * 分页
@@ -115,6 +123,19 @@ public class BaseSelectPageProvider extends MapperTemplate {
         return buildSelectPage(pMappedStatement, true, true, true);
     }
 
+    public String selectCountByFilter(MappedStatement pMappedStatement)
+    {
+        return buildSelectCount(pMappedStatement,true);
+    }
+
+    protected String buildSelectCount(MappedStatement pMappedStatement, boolean pUseFilter) {
+        Class<?> entityClass = this.getEntityClass(pMappedStatement);
+        StringBuilder sql = new StringBuilder();
+        sql.append(SqlHelper.selectCount(entityClass));
+        sql.append(SqlHelper.fromTable(entityClass, this.tableName(entityClass)));
+        sql.append(whereAllIfColumns(entityClass, "record",this.isNotEmpty(),true,false));
+        return sql.toString();
+    }
     protected String buildSelectPage(MappedStatement pMappedStatement, boolean pUseLimit, boolean pUseFilter, boolean pUseOrder) {
         final Class<?> entityClass = getEntityClass(pMappedStatement);
         //将返回值修改为实体类型
