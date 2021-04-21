@@ -84,7 +84,7 @@ public class ClientFactory implements Closeable {
      */
     @Deprecated
     public WebSocketSession getCient(String pLoginName) {
-        if (!mClients.contains(pLoginName)) {
+        if (!hasClient(pLoginName)) {
             return null;
         }
         return mClients.get(pLoginName);
@@ -97,7 +97,7 @@ public class ClientFactory implements Closeable {
      * @return
      */
     public WebSocketSession getClient(String pLoginName) {
-        if (!mClients.contains(pLoginName)) {
+        if (!hasClient(pLoginName)) {
             return null;
         }
         return mClients.get(pLoginName);
@@ -124,7 +124,7 @@ public class ClientFactory implements Closeable {
      * @param pClient
      */
     public void addClient(String pUserName, WebSocketSession pClient) {
-        if (!mClients.containsKey(pUserName)) {
+        if (!hasClient(pUserName)) {
             LogHelper.info("", "增加客户端；name:" + pUserName, "MyClientFactory.addClient");
             mClients.put(pUserName, pClient);
             onAddClient(pUserName, pClient);
@@ -166,7 +166,7 @@ public class ClientFactory implements Closeable {
      * @param pUserName
      */
     public void removeClient(String pUserName) {
-        if (mClients.containsKey(pUserName)) {
+        if (hasClient(pUserName)) {
             WebSocketSession pClient = mClients.get(pUserName);
             String id = pClient.getId();
             String vAddress = pClient.getRemoteAddress().getAddress().getHostAddress();
@@ -200,7 +200,7 @@ public class ClientFactory implements Closeable {
     }
 
     protected void validOnline(String pUserName) throws APPErrorException {
-        if (!mClients.containsKey(pUserName)) {
+        if (!hasClient(pUserName)) {
             throw new APPErrorException("发送消息失败；原因：用户不存在；用户：" + pUserName);
         }
         if (!mClients.get(pUserName).isOpen()) {
