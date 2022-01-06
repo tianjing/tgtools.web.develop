@@ -1,4 +1,4 @@
-package tgtools.web.develop.gateway;
+package tgtools.web.develop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +22,15 @@ import javax.servlet.http.HttpServletResponse;
  * @Description
  * @date 10:21
  */
-@Deprecated
-public abstract class AbstractSingleGateway<T extends UserService> {
+
+public abstract class AbstractSingleController<T extends UserService> {
 
     protected CommandFactory restCommand;
 
     @Autowired
     protected T mUserService;
 
-    public AbstractSingleGateway() {
+    public AbstractSingleController() {
         init();
     }
 

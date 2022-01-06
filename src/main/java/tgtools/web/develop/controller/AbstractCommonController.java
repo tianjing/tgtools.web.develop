@@ -1,4 +1,4 @@
-package tgtools.web.develop.gateway;
+package tgtools.web.develop.controller;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -22,8 +22,7 @@ import java.util.List;
  * @Description
  * @date 13:02
  */
-@Deprecated
-public class AbstractCommonGateway<T extends AbstractCommonService, E extends CommonModel> {
+public class AbstractCommonController<T extends AbstractCommonService, E extends CommonModel> {
 
     @Autowired
     protected T mService;
@@ -116,7 +115,7 @@ public class AbstractCommonGateway<T extends AbstractCommonService, E extends Co
             value = "List<DataDictionary> 的 arrayjson",
             name = "datas"
     )})
-    @RequestMapping(value = "/updateall", method = {RequestMethod.PUT})
+    @RequestMapping(value = "/updateall", method = {RequestMethod.POST})
     @ResponseBody
     public ResponseMessage saveAll(@RequestBody List<E> datas) {
         ResponseMessage res = new ResponseMessage();
@@ -132,7 +131,7 @@ public class AbstractCommonGateway<T extends AbstractCommonService, E extends Co
         return res;
     }
 
-    @RequestMapping(value = "/update", method = {RequestMethod.PUT})
+    @RequestMapping(value = "/update", method = {RequestMethod.POST})
     @ResponseBody
     public ResponseMessage save(@RequestBody E data) {
         ResponseMessage res = new ResponseMessage();
@@ -153,7 +152,7 @@ public class AbstractCommonGateway<T extends AbstractCommonService, E extends Co
             value = "List<DataDictionary> 的 arrayjson",
             name = "datas"
     )})
-    @RequestMapping(value = "/removeall", method = {RequestMethod.DELETE})
+    @RequestMapping(value = "/removeall", method = {RequestMethod.POST})
     @ResponseBody
     public ResponseMessage removeAll(@RequestBody List<E> datas) {
         ResponseMessage data = new ResponseMessage();
@@ -169,7 +168,7 @@ public class AbstractCommonGateway<T extends AbstractCommonService, E extends Co
         return data;
     }
 
-    @RequestMapping(value = "/remove", method = {RequestMethod.DELETE})
+    @RequestMapping(value = "/remove", method = {RequestMethod.POST})
     @ResponseBody
     public ResponseMessage removeAll(@RequestBody E data) {
         ResponseMessage res = new ResponseMessage();

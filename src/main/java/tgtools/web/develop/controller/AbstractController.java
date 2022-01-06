@@ -1,4 +1,4 @@
-package tgtools.web.develop.gateway;
+package tgtools.web.develop.controller;
 
 import tgtools.web.develop.model.BaseModel;
 import tgtools.web.develop.service.AbstractService;
@@ -11,8 +11,7 @@ import tgtools.web.develop.service.AbstractService;
  * @Description
  * @date 8:53
  */
-@Deprecated
-public class AbstractGateway<T extends AbstractService, E extends BaseModel> extends AbstractCommonGateway<T, E> {
+public class AbstractController<T extends AbstractService, E extends BaseModel> extends AbstractCommonController<T, E> {
 
 
 }
