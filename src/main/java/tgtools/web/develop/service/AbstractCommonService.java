@@ -14,33 +14,37 @@ import tgtools.web.develop.tkmybatis.mapper.common.page.BaseSelectPageMapper;
 import tgtools.web.develop.tkmybatis.mapper.common.page.MysqlSelectPageMapper;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.Mapper;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * 通用 业务层包含了常用的dao方法
+ *
  * @author 田径
  * @Title
  * @Description
  * @date 19:14
  */
-public abstract class AbstractCommonService<T extends BaseMapper> implements CommonService<T>
- {
+public abstract class AbstractCommonService<T extends BaseMapper> implements CommonService<T> {
 
     @Autowired
     protected T mDao;
 
-    public T getDao()
-    {return mDao;}
-     /**
-      * 返回基于 BaseModel 的 具体 实体类
-      * @return
-      */
-     @Override
+    public T getDao() {
+        return mDao;
+    }
+
+    /**
+     * 返回基于 BaseModel 的 具体 实体类
+     *
+     * @return
+     */
+    @Override
     public abstract CommonModel createModel();
 
-     /**
+    /**
      * 获取分所有数据
      *
      * @return
@@ -49,6 +53,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
     public List listAll() {
         return mDao.selectAll();
     }
+
     /**
      * 根据条件查询数据
      *
@@ -58,12 +63,12 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
     public List list(Object pParam) {
         return mDao.select(pParam);
     }
+
     /**
      * 获取分页的表格数据
      *
      * @param pPageIndex 页码 从1开始
      * @param pPageSize  页大小
-     *
      * @return
      */
     @Override
@@ -76,6 +81,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
 
     /**
      * 获取一条数据
+     *
      * @param pData
      * @return
      */
@@ -86,23 +92,19 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
 
     /**
      * 获取分页数据
+     *
      * @param pPageIndex
      * @param pPageSize
      * @return
      */
     protected Collection invokePage(int pPageIndex, int pPageSize) {
-        if(mDao instanceof BaseSelectPageMapper)
-        {
-            return ((BaseSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
-        }
-        else if( mDao instanceof MysqlSelectPageMapper)
-        {
-            return ((MysqlSelectPageMapper)mDao).selectPage(createModel(),pPageIndex,pPageSize);
-        }
-        else if(mDao instanceof  Mapper)
-        {
-            Mapper mapper= (Mapper)mDao;
-            return mapper.selectByRowBounds(createModel(),new RowBounds(pPageIndex-1,pPageSize));
+        if (mDao instanceof BaseSelectPageMapper) {
+            return ((BaseSelectPageMapper) mDao).selectPage(createModel(), pPageIndex, pPageSize);
+        } else if (mDao instanceof MysqlSelectPageMapper) {
+            return ((MysqlSelectPageMapper) mDao).selectPage(createModel(), pPageIndex, pPageSize);
+        } else if (mDao instanceof Mapper) {
+            Mapper mapper = (Mapper) mDao;
+            return mapper.selectByRowBounds(createModel(), new RowBounds((pPageIndex - 1) * pPageSize, pPageSize));
         }
         return new ArrayList();
     }
@@ -114,21 +116,19 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      */
     @Override
     public String save(Object pData) {
-        String id =GUID.newGUID();
-        if(pData instanceof TemplateModel)
-        {
-            TemplateModel entity =(TemplateModel)pData;
+        String id = GUID.newGUID();
+        if (pData instanceof TemplateModel) {
+            TemplateModel entity = (TemplateModel) pData;
             entity.setId(id);
             entity.setRev(System.currentTimeMillis());
-        }
-        else if(pData instanceof CommonModel)
-        {
-            CommonModel entity =(CommonModel)pData;
+        } else if (pData instanceof CommonModel) {
+            CommonModel entity = (CommonModel) pData;
             entity.setId(id);
         }
         mDao.insert(pData);
         return id;
     }
+
     /**
      * 添加一条空记录
      *
@@ -136,7 +136,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      */
     @Override
     public String addEmpty() {
-        CommonModel entity =createModel();
+        CommonModel entity = createModel();
         entity.initNew();
         mDao.insert(entity);
         return entity.getId();
@@ -146,7 +146,6 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      * 保存所有数据
      *
      * @param pDatas
-     *
      * @throws APPErrorException
      */
     @Override
@@ -161,7 +160,6 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      * 保存所有数据
      *
      * @param pData
-     *
      * @throws APPErrorException
      */
     @Override
@@ -174,11 +172,10 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      * 验证数据
      *
      * @param pData
-     *
      * @throws APPErrorException
      */
     protected void valid(Object pData) throws APPErrorException {
-        if(pData instanceof TemplateModel){
+        if (pData instanceof TemplateModel) {
             TemplateModel entity = (TemplateModel) pData;
             if (StringUtil.isNullOrEmpty(entity.getId())) {
                 throw new APPErrorException("无效的主键");
@@ -186,8 +183,7 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
             if (null == entity.getRev()) {
                 throw new APPErrorException("无效的REV");
             }
-        }else if(pData instanceof CommonModel)
-        {
+        } else if (pData instanceof CommonModel) {
             CommonModel entity = (CommonModel) pData;
             if (StringUtil.isNullOrEmpty(entity.getId())) {
                 throw new APPErrorException("无效的主键");
@@ -200,7 +196,6 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      * 删除所有数据
      *
      * @param pDatas
-     *
      * @throws APPErrorException
      */
     @Override
@@ -215,21 +210,18 @@ public abstract class AbstractCommonService<T extends BaseMapper> implements Com
      * 删除一条数据
      *
      * @param pData
-     *
      * @throws APPErrorException
      */
-   @Override
+    @Override
     public void remove(Object pData) throws APPErrorException {
         mDao.deleteByPrimaryKey(pData);
     }
 
     protected void validModel(CommonModel pModel) throws APPErrorException {
-        if(null==pModel)
-        {
+        if (null == pModel) {
             throw new APPErrorException("Model不能为空");
         }
-        if(StringUtil.isNullOrEmpty(pModel.getId()))
-        {
+        if (StringUtil.isNullOrEmpty(pModel.getId())) {
             throw new APPErrorException("Id 不能为空");
         }
     }
